@@ -1,29 +1,34 @@
 # iframes-communitcation
 
-## Project setup
-```
+It is available several ways to start the project. Pick the on that suits you the best.
+## Manual setup
+
+```sh
 yarn install
+yarn serve-parent # http://localhost:8080
+yarn serve # http://localhost:8081
+yarn serve # http://localhost:8082
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
+Then open http://localhost:8080 to test the communication between iframes.
+
+## docker-compose setup
+
+```sh
+# install dependencies and start containers
+docker-compose up -d
+
+# stop and remove containers
+docker-compose down
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Makefile setup
+It uses docker-compose under the hood 
 
-### Run your unit tests
-```
-yarn test:unit
-```
+```sh
+# install dependencies and start containers
+make up
 
-### Lints and fixes files
+# stop and remove containers
+make down
 ```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

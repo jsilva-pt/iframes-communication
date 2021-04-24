@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <style>
+      .logs {
+        height: 200px;
+        background-color: #F3F4F6;
+        border: 1px solid #9CA3AF;
+        padding: 16px;
+        margin-bottom: 16px;
+        overflow-y: auto;
+      }
+
+      .iframes {
+        display: flex;
+      }
+
+      .iframes > div{
+        flex: 50%;
+        padding: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+  <script>
+      new Vue({
+        el: '#app',
+        template: `
+          <div>
+            <div class="logs">
+              <div v-for="log in logs">
+                {{ log }}
+              </div>
+            </div>
+
+            <div class="iframes">
+              <div v-for="iframe in iframes">
+                <iframe
+                  :id="iframe.id"
+                  :src="iframe.domain"
+                  width="100%"
+                  height="600"
+                  frameborder="0"
+                  scrolling="no"
+                />
+              </div>
+            </div>
+          </div>
+        `,
+
+        data: () => ({
+          iframes: [{
+            id: 'iframe1',
+            domain: 'http://localhost:8081'
+          },
+          {
+            id: 'iframe2',
+            domain: 'http://localhost:8082'
+          }],
+          logs: []
+        }),
+        
+        created () {
+          window.addEventListener("message", this.receiveMessage, false);
+        },
+
+        destroyed () {
+          window.removeEventListener("message", this.receiveMessage, false);
+        },
+
+        methods: {
+          receiveMessage (event) {
+            if (this.iframes.map(el => el.domain).includes(event.origin)) {
+              this.log(event)
+              this.broadcastMessage(event)
+            }
+          },
+          broadcastMessage (event) {
+            const targetIframes = this.iframes.filter(el => el.domain !== event.origin)
+
+            targetIframes.forEach(element => {
+              document.getElementById(element.id).contentWindow.postMessage(event.data, element.domain)
+            });
+          },
+          log(event) {
+            this.logs.push(`${event.origin}: setUser message received with id ${event.data.id}`)
+          }
+        }
+        
+      })
+  </script>
+</html>
