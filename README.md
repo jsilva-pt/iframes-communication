@@ -32,3 +32,8 @@ make up
 # stop and remove containers
 make down
 ```
+
+## Unit Tests
+```sh
+yarn test:unit
+```
